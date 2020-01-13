@@ -10,8 +10,9 @@ namespace EventLogger
         static string eventHubName = "uncharted";
         static string connectionString = "namespace connection string";
 
-        public Logger(string appName)
+        public Logger(string _connectionString, string appName)
         {
+            connectionString = _connectionString;
             eventHubName = appName;
         }
 
@@ -21,6 +22,11 @@ namespace EventLogger
         }
 
         public static void Error(string logMessage)
+        {
+            SendingMessage(logMessage);
+        }
+
+        public static void Info(string logMessage)
         {
             SendingMessage(logMessage);
         }
