@@ -2,35 +2,32 @@
 using System.Text;
 using System.Threading;
 using Microsoft.ServiceBus.Messaging;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace EventLogger
 {
-    public class Logger
+    public class Logger : TargetWithLayout
     {
-        static string eventHubName = "uncharted";
-        static string connectionString = "namespace connection string";
+        [RequiredParameter]
+        static string eventHubName { get; set; }
+        [RequiredParameter]
+        static string connectionString { get; set; }
 
-        public Logger(string _connectionString, string appName)
+        public Logger()
         {
-            connectionString = _connectionString;
-            eventHubName = appName;
+            connectionString = "default_connstring";
+            eventHubName = "AppName";
         }
 
-        public static void Debug(string logMessage)
+        protected override void Write(LogEventInfo logEvent)
         {
+            string logMessage = this.Layout.Render(logEvent);
+
             SendingMessage(logMessage);
         }
-
-        public static void Error(string logMessage)
-        {
-            SendingMessage(logMessage);
-        }
-
-        public static void Info(string logMessage)
-        {
-            SendingMessage(logMessage);
-        }
-
+        
         static void SendingMessage(string message)
         {
             var eventHubClient = EventHubClient.CreateFromConnectionString(connectionString, eventHubName);
