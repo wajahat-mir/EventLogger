@@ -8,14 +8,15 @@ using NLog.Targets;
 
 namespace EventLogger
 {
-    public class Logger : TargetWithLayout
+    [Target("EventHubLog")]
+    public class EventHubLogger : TargetWithLayout
     {
         [RequiredParameter]
         static string eventHubName { get; set; }
         [RequiredParameter]
         static string connectionString { get; set; }
 
-        public Logger()
+        public EventHubLogger()
         {
             connectionString = "default_connstring";
             eventHubName = "AppName";
